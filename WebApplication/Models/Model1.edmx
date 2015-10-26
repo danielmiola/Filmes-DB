@@ -1,0 +1,436 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="WEBApplicationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Atores">
+          <Key>
+            <PropertyRef Name="AtoresID" />
+          </Key>
+          <Property Name="AtoresID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nome" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DataNascimento" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Colaboracoes">
+          <Key>
+            <PropertyRef Name="StudioID" />
+            <PropertyRef Name="FilmeID" />
+          </Key>
+          <Property Name="StudioID" Type="int" Nullable="false" />
+          <Property Name="FilmeID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Filmes">
+          <Key>
+            <PropertyRef Name="FilmeID" />
+          </Key>
+          <Property Name="FilmeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Titulo" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Duracao" Type="int" />
+          <Property Name="AnoLancamento" Type="int" />
+        </EntityType>
+        <EntityType Name="GeneroFilme">
+          <Key>
+            <PropertyRef Name="GeneroID" />
+            <PropertyRef Name="FilmeID" />
+          </Key>
+          <Property Name="GeneroID" Type="int" Nullable="false" />
+          <Property Name="FilmeID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Generos">
+          <Key>
+            <PropertyRef Name="GeneroID" />
+          </Key>
+          <Property Name="GeneroID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descricao" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Papeis">
+          <Key>
+            <PropertyRef Name="FilmeID" />
+            <PropertyRef Name="AtorID" />
+          </Key>
+          <Property Name="FilmeID" Type="int" Nullable="false" />
+          <Property Name="AtorID" Type="int" Nullable="false" />
+          <Property Name="NomePersonagem" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reviews">
+          <Key>
+            <PropertyRef Name="ReviewID" />
+          </Key>
+          <Property Name="ReviewID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FilmeID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Nota" Type="decimal" Precision="2" Scale="0" Nullable="false" />
+          <Property Name="Resenha" Type="text" />
+        </EntityType>
+        <EntityType Name="Studios">
+          <Key>
+            <PropertyRef Name="StudioID" />
+          </Key>
+          <Property Name="StudioID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nome" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Cidade" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <Association Name="FK_AtorID_Papeis">
+          <End Role="Atores" Type="Self.Atores" Multiplicity="1" />
+          <End Role="Papeis" Type="Self.Papeis" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Atores">
+              <PropertyRef Name="AtoresID" />
+            </Principal>
+            <Dependent Role="Papeis">
+              <PropertyRef Name="AtorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FilmeID_Colaboracoes">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="1" />
+          <End Role="Colaboracoes" Type="Self.Colaboracoes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filmes">
+              <PropertyRef Name="FilmeID" />
+            </Principal>
+            <Dependent Role="Colaboracoes">
+              <PropertyRef Name="FilmeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FilmeID_GeneroFilme">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="1" />
+          <End Role="GeneroFilme" Type="Self.GeneroFilme" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filmes">
+              <PropertyRef Name="FilmeID" />
+            </Principal>
+            <Dependent Role="GeneroFilme">
+              <PropertyRef Name="FilmeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FilmeID_Papeis">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="1" />
+          <End Role="Papeis" Type="Self.Papeis" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filmes">
+              <PropertyRef Name="FilmeID" />
+            </Principal>
+            <Dependent Role="Papeis">
+              <PropertyRef Name="FilmeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FilmeID_Reviews">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="1" />
+          <End Role="Reviews" Type="Self.Reviews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filmes">
+              <PropertyRef Name="FilmeID" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="FilmeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GeneroID_GeneroFilme">
+          <End Role="Generos" Type="Self.Generos" Multiplicity="1" />
+          <End Role="GeneroFilme" Type="Self.GeneroFilme" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Generos">
+              <PropertyRef Name="GeneroID" />
+            </Principal>
+            <Dependent Role="GeneroFilme">
+              <PropertyRef Name="GeneroID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudioID_Colaboracoes">
+          <End Role="Studios" Type="Self.Studios" Multiplicity="1" />
+          <End Role="Colaboracoes" Type="Self.Colaboracoes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Studios">
+              <PropertyRef Name="StudioID" />
+            </Principal>
+            <Dependent Role="Colaboracoes">
+              <PropertyRef Name="StudioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WEBApplicationModelStoreContainer">
+          <EntitySet Name="Atores" EntityType="Self.Atores" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Colaboracoes" EntityType="Self.Colaboracoes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Filmes" EntityType="Self.Filmes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GeneroFilme" EntityType="Self.GeneroFilme" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Generos" EntityType="Self.Generos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Papeis" EntityType="Self.Papeis" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reviews" EntityType="Self.Reviews" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Studios" EntityType="Self.Studios" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AtorID_Papeis" Association="Self.FK_AtorID_Papeis">
+            <End Role="Atores" EntitySet="Atores" />
+            <End Role="Papeis" EntitySet="Papeis" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FilmeID_Colaboracoes" Association="Self.FK_FilmeID_Colaboracoes">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="Colaboracoes" EntitySet="Colaboracoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FilmeID_GeneroFilme" Association="Self.FK_FilmeID_GeneroFilme">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="GeneroFilme" EntitySet="GeneroFilme" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FilmeID_Papeis" Association="Self.FK_FilmeID_Papeis">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="Papeis" EntitySet="Papeis" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FilmeID_Reviews" Association="Self.FK_FilmeID_Reviews">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GeneroID_GeneroFilme" Association="Self.FK_GeneroID_GeneroFilme">
+            <End Role="Generos" EntitySet="Generos" />
+            <End Role="GeneroFilme" EntitySet="GeneroFilme" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudioID_Colaboracoes" Association="Self.FK_StudioID_Colaboracoes">
+            <End Role="Studios" EntitySet="Studios" />
+            <End Role="Colaboracoes" EntitySet="Colaboracoes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WEBApplicationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Atores">
+          <Key>
+            <PropertyRef Name="AtoresID" />
+          </Key>
+          <Property Name="AtoresID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DataNascimento" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Papeis" Relationship="Self.FK_AtorID_Papeis" FromRole="Atores" ToRole="Papeis" />
+        </EntityType>
+        <EntityType Name="Filmes">
+          <Key>
+            <PropertyRef Name="FilmeID" />
+          </Key>
+          <Property Name="FilmeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Titulo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Duracao" Type="Int32" />
+          <Property Name="AnoLancamento" Type="Int32" />
+          <NavigationProperty Name="Papeis" Relationship="Self.FK_FilmeID_Papeis" FromRole="Filmes" ToRole="Papeis" />
+          <NavigationProperty Name="Reviews" Relationship="Self.FK_FilmeID_Reviews" FromRole="Filmes" ToRole="Reviews" />
+          <NavigationProperty Name="Studios" Relationship="Self.Colaboracoes" FromRole="Filmes" ToRole="Studios" />
+          <NavigationProperty Name="Generos" Relationship="Self.GeneroFilme" FromRole="Filmes" ToRole="Generos" />
+        </EntityType>
+        <EntityType Name="Generos">
+          <Key>
+            <PropertyRef Name="GeneroID" />
+          </Key>
+          <Property Name="GeneroID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descricao" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Filmes" Relationship="Self.GeneroFilme" FromRole="Generos" ToRole="Filmes" />
+        </EntityType>
+        <EntityType Name="Papeis">
+          <Key>
+            <PropertyRef Name="FilmeID" />
+            <PropertyRef Name="AtorID" />
+          </Key>
+          <Property Name="FilmeID" Type="Int32" Nullable="false" />
+          <Property Name="AtorID" Type="Int32" Nullable="false" />
+          <Property Name="NomePersonagem" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Atores" Relationship="Self.FK_AtorID_Papeis" FromRole="Papeis" ToRole="Atores" />
+          <NavigationProperty Name="Filmes" Relationship="Self.FK_FilmeID_Papeis" FromRole="Papeis" ToRole="Filmes" />
+        </EntityType>
+        <EntityType Name="Reviews">
+          <Key>
+            <PropertyRef Name="ReviewID" />
+          </Key>
+          <Property Name="ReviewID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FilmeID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Nota" Type="Decimal" Precision="2" Scale="0" Nullable="false" />
+          <Property Name="Resenha" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Filmes" Relationship="Self.FK_FilmeID_Reviews" FromRole="Reviews" ToRole="Filmes" />
+        </EntityType>
+        <EntityType Name="Studios">
+          <Key>
+            <PropertyRef Name="StudioID" />
+          </Key>
+          <Property Name="StudioID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Cidade" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Filmes" Relationship="Self.Colaboracoes" FromRole="Studios" ToRole="Filmes" />
+        </EntityType>
+        <Association Name="FK_AtorID_Papeis">
+          <End Role="Atores" Type="Self.Atores" Multiplicity="1" />
+          <End Role="Papeis" Type="Self.Papeis" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Atores">
+              <PropertyRef Name="AtoresID" />
+            </Principal>
+            <Dependent Role="Papeis">
+              <PropertyRef Name="AtorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FilmeID_Papeis">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="1" />
+          <End Role="Papeis" Type="Self.Papeis" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filmes">
+              <PropertyRef Name="FilmeID" />
+            </Principal>
+            <Dependent Role="Papeis">
+              <PropertyRef Name="FilmeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FilmeID_Reviews">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="1" />
+          <End Role="Reviews" Type="Self.Reviews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filmes">
+              <PropertyRef Name="FilmeID" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="FilmeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Colaboracoes">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="*" />
+          <End Role="Studios" Type="Self.Studios" Multiplicity="*" />
+        </Association>
+        <Association Name="GeneroFilme">
+          <End Role="Filmes" Type="Self.Filmes" Multiplicity="*" />
+          <End Role="Generos" Type="Self.Generos" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="WEBApplicationEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Atores" EntityType="Self.Atores" />
+          <EntitySet Name="Filmes" EntityType="Self.Filmes" />
+          <EntitySet Name="Generos" EntityType="Self.Generos" />
+          <EntitySet Name="Papeis" EntityType="Self.Papeis" />
+          <EntitySet Name="Reviews" EntityType="Self.Reviews" />
+          <EntitySet Name="Studios" EntityType="Self.Studios" />
+          <AssociationSet Name="FK_AtorID_Papeis" Association="Self.FK_AtorID_Papeis">
+            <End Role="Atores" EntitySet="Atores" />
+            <End Role="Papeis" EntitySet="Papeis" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FilmeID_Papeis" Association="Self.FK_FilmeID_Papeis">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="Papeis" EntitySet="Papeis" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FilmeID_Reviews" Association="Self.FK_FilmeID_Reviews">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="Colaboracoes" Association="Self.Colaboracoes">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="Studios" EntitySet="Studios" />
+          </AssociationSet>
+          <AssociationSet Name="GeneroFilme" Association="Self.GeneroFilme">
+            <End Role="Filmes" EntitySet="Filmes" />
+            <End Role="Generos" EntitySet="Generos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WEBApplicationModelStoreContainer" CdmEntityContainer="WEBApplicationEntities">
+          <EntitySetMapping Name="Atores">
+            <EntityTypeMapping TypeName="WEBApplicationModel.Atores">
+              <MappingFragment StoreEntitySet="Atores">
+                <ScalarProperty Name="AtoresID" ColumnName="AtoresID" />
+                <ScalarProperty Name="Nome" ColumnName="Nome" />
+                <ScalarProperty Name="DataNascimento" ColumnName="DataNascimento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Filmes">
+            <EntityTypeMapping TypeName="WEBApplicationModel.Filmes">
+              <MappingFragment StoreEntitySet="Filmes">
+                <ScalarProperty Name="FilmeID" ColumnName="FilmeID" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="Duracao" ColumnName="Duracao" />
+                <ScalarProperty Name="AnoLancamento" ColumnName="AnoLancamento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Generos">
+            <EntityTypeMapping TypeName="WEBApplicationModel.Generos">
+              <MappingFragment StoreEntitySet="Generos">
+                <ScalarProperty Name="GeneroID" ColumnName="GeneroID" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Papeis">
+            <EntityTypeMapping TypeName="WEBApplicationModel.Papeis">
+              <MappingFragment StoreEntitySet="Papeis">
+                <ScalarProperty Name="FilmeID" ColumnName="FilmeID" />
+                <ScalarProperty Name="AtorID" ColumnName="AtorID" />
+                <ScalarProperty Name="NomePersonagem" ColumnName="NomePersonagem" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reviews">
+            <EntityTypeMapping TypeName="WEBApplicationModel.Reviews">
+              <MappingFragment StoreEntitySet="Reviews">
+                <ScalarProperty Name="ReviewID" ColumnName="ReviewID" />
+                <ScalarProperty Name="FilmeID" ColumnName="FilmeID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Nota" ColumnName="Nota" />
+                <ScalarProperty Name="Resenha" ColumnName="Resenha" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Studios">
+            <EntityTypeMapping TypeName="WEBApplicationModel.Studios">
+              <MappingFragment StoreEntitySet="Studios">
+                <ScalarProperty Name="StudioID" ColumnName="StudioID" />
+                <ScalarProperty Name="Nome" ColumnName="Nome" />
+                <ScalarProperty Name="Cidade" ColumnName="Cidade" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Colaboracoes" TypeName="WEBApplicationModel.Colaboracoes" StoreEntitySet="Colaboracoes">
+            <EndProperty Name="Filmes">
+              <ScalarProperty Name="FilmeID" ColumnName="FilmeID" />
+            </EndProperty>
+            <EndProperty Name="Studios">
+              <ScalarProperty Name="StudioID" ColumnName="StudioID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="GeneroFilme" TypeName="WEBApplicationModel.GeneroFilme" StoreEntitySet="GeneroFilme">
+            <EndProperty Name="Filmes">
+              <ScalarProperty Name="FilmeID" ColumnName="FilmeID" />
+            </EndProperty>
+            <EndProperty Name="Generos">
+              <ScalarProperty Name="GeneroID" ColumnName="GeneroID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

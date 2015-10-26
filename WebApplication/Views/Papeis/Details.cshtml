@@ -1,0 +1,42 @@
+﻿@model WebApplication.Models.Papeis
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Papeis</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NomePersonagem)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NomePersonagem)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Atores.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Atores.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Filmes.Titulo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Filmes.Titulo)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

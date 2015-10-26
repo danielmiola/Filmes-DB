@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d60eb1e216be4deca9dd2867bc047078" Name="Diagram1">
+        <EntityTypeShape EntityType="WEBApplicationModel.Atores" Width="1.5" PointX="6.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="WEBApplicationModel.Filmes" Width="1.5" PointX="0.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WEBApplicationModel.Generos" Width="1.5" PointX="0.75" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="WEBApplicationModel.Papeis" Width="1.5" PointX="3.875" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WEBApplicationModel.Reviews" Width="1.5" PointX="4.625" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WEBApplicationModel.Studios" Width="1.5" PointX="2" PointY="9.75" IsExpanded="true" />
+        <AssociationConnector Association="WEBApplicationModel.FK_AtorID_Papeis" ManuallyRouted="false" />
+        <AssociationConnector Association="WEBApplicationModel.FK_FilmeID_Papeis" ManuallyRouted="false" />
+        <AssociationConnector Association="WEBApplicationModel.FK_FilmeID_Reviews" ManuallyRouted="false" />
+        <AssociationConnector Association="WEBApplicationModel.Colaboracoes" ManuallyRouted="false" />
+        <AssociationConnector Association="WEBApplicationModel.GeneroFilme" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
