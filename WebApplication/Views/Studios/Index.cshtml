@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<WebApplication.Models.Studios>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Studios";
 }
 
-<h2>Index</h2>
+<h2>Studios</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Cadastrar novo studio", "Create")
 </p>
 <table class="table">
     <tr>
@@ -29,9 +29,9 @@
             @Html.DisplayFor(modelItem => item.Cidade)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.StudioID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.StudioID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.StudioID })
+            @Html.ActionLink("Editar", "Edit", new { id = item.StudioID }, new { @class = "btn btn-warning btn-xs" })
+            @Html.ActionLink("Detalhes", "Details", new { id = item.StudioID }, new { @class = "btn btn-info btn-xs" })
+            @Html.ActionLink("Apagar", "Delete", new { id = item.StudioID }, new { @class = "btn btn-danger btn-xs" })
         </td>
     </tr>
 }

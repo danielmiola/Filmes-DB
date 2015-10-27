@@ -1,10 +1,10 @@
 ﻿@model WebApplication.Models.Filmes
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Editar";
 }
 
-<h2>Edit</h2>
+<h2>Editar</h2>
 
 
 @using (Html.BeginForm())
@@ -20,7 +20,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Titulo, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Titulo)
+                @Html.TextBoxFor(model => model.Titulo, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Titulo)
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Duracao, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Duracao)
+                @Html.TextBoxFor(model => model.Duracao, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Duracao)
             </div>
         </div>
@@ -36,21 +36,21 @@
         <div class="form-group">
             @Html.LabelFor(model => model.AnoLancamento, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.AnoLancamento)
+                @Html.TextBoxFor(model => model.AnoLancamento, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.AnoLancamento)
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Salvar" class="btn btn-success" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Voltar à lista", "Index")
 </div>
 
 @section Scripts {

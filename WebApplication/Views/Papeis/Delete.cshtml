@@ -1,15 +1,16 @@
 ﻿@model WebApplication.Models.Papeis
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Apagar";
 }
 
-<h2>Delete</h2>
+<h2>Apagar</h2>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Papeis</h4>
+    <h4>Personagens</h4>
     <hr />
+    <h3>Deseja apagar o seguinte personagem?</h3>
+    <br />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.NomePersonagem)
@@ -41,8 +42,8 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Apagar" class="btn btn-danger" /> |
+            @Html.ActionLink("Voltar à lista", "Index")
         </div>
     }
 </div>

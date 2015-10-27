@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<WebApplication.Models.Atores>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Atores";
 }
 
-<h2>Index</h2>
+<h2>Atores</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Cadastrar novo ator", "Create")
 </p>
 <table class="table">
     <tr>
@@ -29,9 +29,9 @@
             @Html.DisplayFor(modelItem => item.DataNascimento)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.AtoresID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.AtoresID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.AtoresID })
+            @Html.ActionLink("Editar", "Edit", new { id = item.AtoresID }, new { @class = "btn btn-warning btn-xs" })
+            @Html.ActionLink("Detalhes", "Details", new { id = item.AtoresID }, new { @class = "btn btn-info btn-xs" })
+            @Html.ActionLink("Apagar", "Delete", new { id = item.AtoresID }, new { @class = "btn btn-danger btn-xs" })
         </td>
     </tr>
 }

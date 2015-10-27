@@ -1,10 +1,10 @@
 ﻿@model WebApplication.Models.Studios
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Cadastro";
 }
 
-<h2>Create</h2>
+<h2>Cadastro</h2>
 
 
 @using (Html.BeginForm()) 
@@ -19,7 +19,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Nome, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Nome)
+                @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Nome)
             </div>
         </div>
@@ -27,21 +27,21 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Cidade, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Cidade)
+                @Html.TextBoxFor(model => model.Cidade, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Cidade)
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Cadastrar" class="btn btn-success" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Voltar à lista", "Index")
 </div>
 
 @section Scripts {
