@@ -14,12 +14,12 @@ namespace WebApplication.Controllers
 {
     public class GenerosController : Controller
     {
-        private WEBApplicationContext db = new WEBApplicationContext();
+        private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Generos/
         public async Task<ActionResult> Index()
         {
-            return View(await db.Generos.ToListAsync());
+            return View(await unitOfWork.GenerosRepository.GetAsync());
         }
 
         // GET: /Generos/Details/5
@@ -29,7 +29,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Generos generos = await db.Generos.FindAsync(id);
+            Generos generos = await unitOfWork.GenerosRepository.GetByIDAsync(id);
             if (generos == null)
             {
                 return HttpNotFound();
@@ -52,8 +52,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Generos.Add(generos);
-                await db.SaveChangesAsync();
+                unitOfWork.GenerosRepository.Insert(generos);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -67,7 +67,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Generos generos = await db.Generos.FindAsync(id);
+            Generos generos = await unitOfWork.GenerosRepository.GetByIDAsync(id);
             if (generos == null)
             {
                 return HttpNotFound();
@@ -84,8 +84,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(generos).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.GenerosRepository.Update(generos);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(generos);
@@ -98,7 +98,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Generos generos = await db.Generos.FindAsync(id);
+            Generos generos = await unitOfWork.GenerosRepository.GetByIDAsync(id);
             if (generos == null)
             {
                 return HttpNotFound();
@@ -111,9 +111,8 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Generos generos = await db.Generos.FindAsync(id);
-            db.Generos.Remove(generos);
-            await db.SaveChangesAsync();
+            unitOfWork.GenerosRepository.Delete(id);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -121,7 +120,7 @@ namespace WebApplication.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -14,12 +14,12 @@ namespace WebApplication.Controllers
 {
     public class StudiosController : Controller
     {
-        private WEBApplicationContext db = new WEBApplicationContext();
+        private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Studios/
         public async Task<ActionResult> Index()
         {
-            return View(await db.Studios.ToListAsync());
+            return View(await unitOfWork.StudiosRepository.GetAsync());
         }
 
         // GET: /Studios/Details/5
@@ -29,7 +29,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Studios studios = await db.Studios.FindAsync(id);
+            Studios studios = await unitOfWork.StudiosRepository.GetByIDAsync(id);
             if (studios == null)
             {
                 return HttpNotFound();
@@ -52,8 +52,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Studios.Add(studios);
-                await db.SaveChangesAsync();
+                unitOfWork.StudiosRepository.Insert(studios);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -67,7 +67,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Studios studios = await db.Studios.FindAsync(id);
+            Studios studios = await unitOfWork.StudiosRepository.GetByIDAsync(id);
             if (studios == null)
             {
                 return HttpNotFound();
@@ -84,8 +84,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(studios).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.StudiosRepository.Update(studios);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(studios);
@@ -98,7 +98,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Studios studios = await db.Studios.FindAsync(id);
+            Studios studios = await unitOfWork.StudiosRepository.GetByIDAsync(id);
             if (studios == null)
             {
                 return HttpNotFound();
@@ -111,9 +111,8 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Studios studios = await db.Studios.FindAsync(id);
-            db.Studios.Remove(studios);
-            await db.SaveChangesAsync();
+            unitOfWork.StudiosRepository.Delete(id);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -121,7 +120,7 @@ namespace WebApplication.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

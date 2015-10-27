@@ -14,23 +14,22 @@ namespace WebApplication.Controllers
 {
     public class PapeisController : Controller
     {
-        private WEBApplicationContext db = new WEBApplicationContext();
+        private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Papeis/
         public async Task<ActionResult> Index()
         {
-            var papeis = db.Papeis.Include(p => p.Atores).Include(p => p.Filmes);
-            return View(await papeis.ToListAsync());
+            return View(await unitOfWork.PapeisRepository.GetAsync(includeProperties: "Atores,Filmes"));
         }
 
         // GET: /Papeis/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public async Task<ActionResult> Details(int? FilmeID, int? AtorID)
         {
-            if (id == null)
+            if (FilmeID == null || AtorID == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Papeis papeis = await db.Papeis.FindAsync(id);
+            Papeis papeis = await unitOfWork.PapeisRepository.GetByIDAsync(FilmeID, AtorID);
             if (papeis == null)
             {
                 return HttpNotFound();
@@ -41,8 +40,8 @@ namespace WebApplication.Controllers
         // GET: /Papeis/Create
         public ActionResult Create()
         {
-            ViewBag.AtorID = new SelectList(db.Atores, "AtoresID", "Nome");
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo");
+            ViewBag.AtorID = new SelectList(unitOfWork.AtoresRepository.Get(), "AtoresID", "Nome");
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo");
             return View();
         }
 
@@ -55,30 +54,30 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Papeis.Add(papeis);
-                await db.SaveChangesAsync();
+                unitOfWork.PapeisRepository.Insert(papeis);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.AtorID = new SelectList(db.Atores, "AtoresID", "Nome", papeis.AtorID);
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo", papeis.FilmeID);
+            ViewBag.AtorID = new SelectList(unitOfWork.AtoresRepository.Get(), "AtoresID", "Nome", papeis.AtorID);
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", papeis.FilmeID);
             return View(papeis);
         }
 
         // GET: /Papeis/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> Edit(int? FilmeID, int? AtorID)
         {
-            if (id == null)
+            if (FilmeID == null || AtorID == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Papeis papeis = await db.Papeis.FindAsync(id);
+            Papeis papeis = await unitOfWork.PapeisRepository.GetByIDAsync(FilmeID, AtorID);
             if (papeis == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.AtorID = new SelectList(db.Atores, "AtoresID", "Nome", papeis.AtorID);
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo", papeis.FilmeID);
+            ViewBag.AtorID = new SelectList(unitOfWork.AtoresRepository.Get(), "AtoresID", "Nome", papeis.AtorID);
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", papeis.FilmeID);
             return View(papeis);
         }
 
@@ -91,23 +90,23 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(papeis).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.PapeisRepository.Update(papeis);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.AtorID = new SelectList(db.Atores, "AtoresID", "Nome", papeis.AtorID);
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo", papeis.FilmeID);
+            ViewBag.AtorID = new SelectList(unitOfWork.AtoresRepository.Get(), "AtoresID", "Nome", papeis.AtorID);
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", papeis.FilmeID);
             return View(papeis);
         }
 
         // GET: /Papeis/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> Delete(int? FilmeID, int? AtorID)
         {
-            if (id == null)
+            if (FilmeID == null || AtorID == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Papeis papeis = await db.Papeis.FindAsync(id);
+            Papeis papeis = await unitOfWork.PapeisRepository.GetByIDAsync(FilmeID, AtorID);
             if (papeis == null)
             {
                 return HttpNotFound();
@@ -118,11 +117,10 @@ namespace WebApplication.Controllers
         // POST: /Papeis/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int FilmeID, int AtorID)
         {
-            Papeis papeis = await db.Papeis.FindAsync(id);
-            db.Papeis.Remove(papeis);
-            await db.SaveChangesAsync();
+            unitOfWork.PapeisRepository.Delete(FilmeID, AtorID);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -130,7 +128,7 @@ namespace WebApplication.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

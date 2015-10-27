@@ -168,6 +168,8 @@
     <Compile Include="Controllers\PapeisController.cs" />
     <Compile Include="Controllers\ReviewsController.cs" />
     <Compile Include="Controllers\StudiosController.cs" />
+    <Compile Include="DAL\GenericRepository.cs" />
+    <Compile Include="DAL\UnitOfWork.cs" />
     <Compile Include="DAL\WEBApplicationContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -183,6 +185,11 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Model1.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Context.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Model1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -283,11 +290,6 @@
     <Content Include="Views\Generos\Details.cshtml" />
     <Content Include="Views\Generos\Edit.cshtml" />
     <Content Include="Views\Generos\Index.cshtml" />
-    <Content Include="Views\Papeis\Create.cshtml" />
-    <Content Include="Views\Papeis\Delete.cshtml" />
-    <Content Include="Views\Papeis\Details.cshtml" />
-    <Content Include="Views\Papeis\Edit.cshtml" />
-    <Content Include="Views\Papeis\Index.cshtml" />
     <Content Include="Views\Reviews\Create.cshtml" />
     <Content Include="Views\Reviews\Delete.cshtml" />
     <Content Include="Views\Reviews\Details.cshtml" />
@@ -298,6 +300,11 @@
     <Content Include="Views\Studios\Details.cshtml" />
     <Content Include="Views\Studios\Edit.cshtml" />
     <Content Include="Views\Studios\Index.cshtml" />
+    <Content Include="Views\Papeis\Create.cshtml" />
+    <Content Include="Views\Papeis\Delete.cshtml" />
+    <Content Include="Views\Papeis\Details.cshtml" />
+    <Content Include="Views\Papeis\Edit.cshtml" />
+    <Content Include="Views\Papeis\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

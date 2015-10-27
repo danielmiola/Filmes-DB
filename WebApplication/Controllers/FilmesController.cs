@@ -14,12 +14,12 @@ namespace WebApplication.Controllers
 {
     public class FilmesController : Controller
     {
-        private WEBApplicationContext db = new WEBApplicationContext();
+        private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Filmes/
         public async Task<ActionResult> Index()
         {
-            return View(await db.Filmes.ToListAsync());
+            return View(await unitOfWork.FilmesRepository.GetAsync());
         }
 
         // GET: /Filmes/Details/5
@@ -29,7 +29,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Filmes filmes = await db.Filmes.FindAsync(id);
+            Filmes filmes = await unitOfWork.FilmesRepository.GetByIDAsync(id);
             if (filmes == null)
             {
                 return HttpNotFound();
@@ -52,8 +52,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Filmes.Add(filmes);
-                await db.SaveChangesAsync();
+                unitOfWork.FilmesRepository.Insert(filmes);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -67,7 +67,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Filmes filmes = await db.Filmes.FindAsync(id);
+            Filmes filmes = await unitOfWork.FilmesRepository.GetByIDAsync(id);
             if (filmes == null)
             {
                 return HttpNotFound();
@@ -84,8 +84,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(filmes).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.FilmesRepository.Update(filmes);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(filmes);
@@ -98,7 +98,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Filmes filmes = await db.Filmes.FindAsync(id);
+            Filmes filmes = await unitOfWork.FilmesRepository.GetByIDAsync(id);
             if (filmes == null)
             {
                 return HttpNotFound();
@@ -111,9 +111,8 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Filmes filmes = await db.Filmes.FindAsync(id);
-            db.Filmes.Remove(filmes);
-            await db.SaveChangesAsync();
+            unitOfWork.FilmesRepository.Delete(id);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -121,7 +120,7 @@ namespace WebApplication.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

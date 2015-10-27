@@ -11,10 +11,14 @@ namespace WebApplication.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     
     public partial class Papeis
     {
+        [Key, Column(Order = 0)]
         public int FilmeID { get; set; }
+        [Key, Column(Order = 1)]
         public int AtorID { get; set; }
         public string NomePersonagem { get; set; }
     

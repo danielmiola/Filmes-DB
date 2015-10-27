@@ -17,13 +17,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/" style="margin-top: -5px;"><span class="glyphicon glyphicon-film"></span> Filmes DB</a>
+                <a class="navbar-brand" href="/"    ><span class="glyphicon glyphicon-film"></span> Filmes DB</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Resenhas", "Index", "Reviews")</li>
                     <li>@Html.ActionLink("Filmes", "Index", "Filmes")</li>
                     <li>@Html.ActionLink("Atores", "Index", "Atores")</li>
+                    <li>@Html.ActionLink("Papeis", "Index", "Papeis")</li>
                     <li>@Html.ActionLink("Generos", "Index", "Generos")</li>
+                    <li>@Html.ActionLink("Studios", "Index", "Studios")</li>
                     <li>@Html.ActionLink("Contato", "Contact", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")

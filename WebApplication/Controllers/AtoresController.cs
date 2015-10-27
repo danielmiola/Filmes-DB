@@ -14,12 +14,12 @@ namespace WebApplication.Controllers
 {
     public class AtoresController : Controller
     {
-        private WEBApplicationContext db = new WEBApplicationContext();
+        private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Atores/
         public async Task<ActionResult> Index()
         {
-            return View(await db.Atores.ToListAsync());
+            return View(await unitOfWork.AtoresRepository.GetAsync());
         }
 
         // GET: /Atores/Details/5
@@ -29,7 +29,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Atores atores = await db.Atores.FindAsync(id);
+            Atores atores = await unitOfWork.AtoresRepository.GetByIDAsync(id);
             if (atores == null)
             {
                 return HttpNotFound();
@@ -52,8 +52,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Atores.Add(atores);
-                await db.SaveChangesAsync();
+                unitOfWork.AtoresRepository.Insert(atores);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -67,7 +67,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Atores atores = await db.Atores.FindAsync(id);
+            Atores atores = await unitOfWork.AtoresRepository.GetByIDAsync(id);
             if (atores == null)
             {
                 return HttpNotFound();
@@ -84,8 +84,8 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(atores).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.AtoresRepository.Update(atores);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(atores);
@@ -98,7 +98,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Atores atores = await db.Atores.FindAsync(id);
+            Atores atores = await unitOfWork.AtoresRepository.GetByIDAsync(id);
             if (atores == null)
             {
                 return HttpNotFound();
@@ -111,9 +111,8 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Atores atores = await db.Atores.FindAsync(id);
-            db.Atores.Remove(atores);
-            await db.SaveChangesAsync();
+            unitOfWork.AtoresRepository.Delete(id);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -121,7 +120,7 @@ namespace WebApplication.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

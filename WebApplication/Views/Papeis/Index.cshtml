@@ -35,9 +35,9 @@
             @Html.DisplayFor(modelItem => item.Filmes.Titulo)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            @Html.ActionLink("Edit", "Edit", new { FilmeID = item.FilmeID, AtorID = item.AtorID }) |
+            @Html.ActionLink("Details", "Details", new { FilmeID = item.FilmeID, AtorID = item.AtorID }) |
+            @Html.ActionLink("Delete", "Delete", new { FilmeID = item.FilmeID, AtorID = item.AtorID })
         </td>
     </tr>
 }

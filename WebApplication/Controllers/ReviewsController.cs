@@ -14,13 +14,12 @@ namespace WebApplication.Controllers
 {
     public class ReviewsController : Controller
     {
-        private WEBApplicationContext db = new WEBApplicationContext();
+        private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Reviews/
         public async Task<ActionResult> Index()
         {
-            var reviews = db.Reviews.Include(r => r.Filmes);
-            return View(await reviews.ToListAsync());
+            return View(await unitOfWork.ReviewsRepository.GetAsync(includeProperties: "Filmes"));
         }
 
         // GET: /Reviews/Details/5
@@ -30,7 +29,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reviews reviews = await db.Reviews.FindAsync(id);
+            Reviews reviews = await unitOfWork.ReviewsRepository.GetByIDAsync(id);
             if (reviews == null)
             {
                 return HttpNotFound();
@@ -41,7 +40,7 @@ namespace WebApplication.Controllers
         // GET: /Reviews/Create
         public ActionResult Create()
         {
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo");
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo");
             return View();
         }
 
@@ -54,12 +53,12 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Reviews.Add(reviews);
-                await db.SaveChangesAsync();
+                unitOfWork.ReviewsRepository.Insert(reviews);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo", reviews.FilmeID);
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", reviews.FilmeID);
             return View(reviews);
         }
 
@@ -70,12 +69,12 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reviews reviews = await db.Reviews.FindAsync(id);
+            Reviews reviews = await unitOfWork.ReviewsRepository.GetByIDAsync(id);
             if (reviews == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo", reviews.FilmeID);
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", reviews.FilmeID);
             return View(reviews);
         }
 
@@ -88,11 +87,11 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(reviews).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.ReviewsRepository.Update(reviews);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.FilmeID = new SelectList(db.Filmes, "FilmeID", "Titulo", reviews.FilmeID);
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", reviews.FilmeID);
             return View(reviews);
         }
 
@@ -103,7 +102,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reviews reviews = await db.Reviews.FindAsync(id);
+            Reviews reviews = await unitOfWork.ReviewsRepository.GetByIDAsync(id);
             if (reviews == null)
             {
                 return HttpNotFound();
@@ -116,9 +115,8 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Reviews reviews = await db.Reviews.FindAsync(id);
-            db.Reviews.Remove(reviews);
-            await db.SaveChangesAsync();
+            unitOfWork.ReviewsRepository.Delete(id);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -126,7 +124,7 @@ namespace WebApplication.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }
