@@ -11,7 +11,7 @@
 	<hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Nome)
+            Studio
         </dt>
 
         <dd>
@@ -19,11 +19,26 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Cidade)
+            Cidade
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.Cidade)
+        </dd>
+
+        <dt><hr /></dt>
+        <dd></dd>
+
+        <dt>
+            Filmes
+        </dt>
+
+        <dd>
+            @foreach (var item in Model.Filmes)
+            {
+                @Html.ActionLink(item.Titulo, "/../Filmes/Details", new { id = item.FilmeID })
+                <br />
+            }
         </dd>
 
     </dl>

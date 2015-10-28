@@ -29,7 +29,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Atores atores = await unitOfWork.AtoresRepository.GetByIDAsync(id);
+            var atores = await unitOfWork.AtoresRepository.GetByIDAsync(id);
             if (atores == null)
             {
                 return HttpNotFound();

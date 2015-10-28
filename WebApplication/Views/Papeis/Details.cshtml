@@ -11,7 +11,7 @@
 	<hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.NomePersonagem)
+            Personagem
         </dt>
 
         <dd>
@@ -19,19 +19,19 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Atores.Nome)
+            Ator
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Atores.Nome)
+            @Html.ActionLink(Model.Atores.Nome, "/../Atores/Details", new { id = Model.AtorID })
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Filmes.Titulo)
+            Filme
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Filmes.Titulo)
+            @Html.ActionLink(Model.Filmes.Titulo, "/../Filmes/Details", new { id = Model.FilmeID })
         </dd>
 
     </dl>

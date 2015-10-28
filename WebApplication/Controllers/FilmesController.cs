@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using WebApplication.Models;
 using WebApplication.DAL;
+using WebApplication.ViewModels;
 
 namespace WebApplication.Controllers
 {
@@ -40,6 +41,7 @@ namespace WebApplication.Controllers
         // GET: /Filmes/Create
         public ActionResult Create()
         {
+            PopulateAssigned();
             return View();
         }
 
@@ -48,12 +50,14 @@ namespace WebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include="Titulo,Duracao,AnoLancamento")] Filmes filmes)
+        public async Task<ActionResult> Create([Bind(Include = "Titulo,Duracao,AnoLancamento")] Filmes filmes, string[] selectedStudios, string[] selectedGeneros)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    UpdateRelatedStudios(selectedStudios, filmes);
+                    UpdateRelatedGenres(selectedGeneros, filmes);
                     unitOfWork.FilmesRepository.Insert(filmes);
                     await unitOfWork.SaveAsync();
                     return RedirectToAction("Index");
@@ -75,12 +79,14 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Filmes filmes = await unitOfWork.FilmesRepository.GetByIDAsync(id);
+            var filmes = await unitOfWork.FilmesRepository.GetAsync( filter: f => f.FilmeID == id, includeProperties: "Studios,Generos" );
+            Filmes filme = filmes.FirstOrDefault();
+            PopulateAssigned(filme);
             if (filmes == null)
             {
                 return HttpNotFound();
             }
-            return View(filmes);
+            return View(filme);
         }
 
         // POST: /Filmes/Edit/5
@@ -88,19 +94,22 @@ namespace WebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditPost(int? id)
+        public async Task<ActionResult> EditPost(int? id, string[] selectedStudios, string[] selectedGeneros)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var filmToUpdate = await unitOfWork.AtoresRepository.GetByIDAsync(id);
+            var filmes = await unitOfWork.FilmesRepository.GetAsync(filter: f => f.FilmeID == id, includeProperties: "Studios,Generos");
+            var filmToUpdate = filmes.FirstOrDefault();
 
             if (TryUpdateModel(filmToUpdate, "", new string[] { "Titulo","Duracao","AnoLancamento" }))
             {
                 try
                 {
+                    UpdateRelatedStudios(selectedStudios, filmToUpdate);
+                    UpdateRelatedGenres(selectedGeneros, filmToUpdate);
                     await unitOfWork.SaveAsync();
                     return RedirectToAction("Index");
                 }
@@ -111,6 +120,7 @@ namespace WebApplication.Controllers
                 }
             }
 
+            PopulateAssigned(filmToUpdate);
             return View(filmToUpdate);
         }
 
@@ -160,6 +170,104 @@ namespace WebApplication.Controllers
                 unitOfWork.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void PopulateAssigned(Filmes filme = null)
+        {
+            if (filme == null)
+            {
+                filme = new Filmes();
+            }
+            var allGenres = unitOfWork.GenerosRepository.Get();
+            var allStudios = unitOfWork.StudiosRepository.Get();
+            var filmGenres = new HashSet<int>(filme.Generos.Select(g => g.GeneroID));
+            var filmStudios = new HashSet<int>(filme.Studios.Select(s => s.StudioID));
+            var viewModelGenres = new List<AssignedData>();
+            var viewModelStudios = new List<AssignedData>();
+            
+            foreach (var genre in allGenres)
+            {
+                viewModelGenres.Add(new AssignedData
+                {
+                    ID = genre.GeneroID,
+                    Description = genre.Descricao,
+                    Assigned = filmGenres.Contains(genre.GeneroID)
+                });
+            }
+
+            foreach (var studio in allStudios)
+            {
+                viewModelStudios.Add(new AssignedData
+                {
+                    ID = studio.StudioID,
+                    Description = studio.Nome,
+                    Assigned = filmStudios.Contains(studio.StudioID)
+                });
+            }
+            
+            ViewBag.Generos = viewModelGenres;
+            ViewBag.Studios = viewModelStudios;
+        }
+
+        private void UpdateRelatedStudios(string[] selectedStudios, Filmes filmeToUpdate)
+        {
+            if (selectedStudios == null)
+            {
+                filmeToUpdate.Studios = new List<Studios>();
+                return;
+            }
+
+            var selectedStudiosHS = new HashSet<string>(selectedStudios);
+            var filmeStudios = new HashSet<int>(filmeToUpdate.Studios.Select(s => s.StudioID));
+
+            foreach (var studio in unitOfWork.StudiosRepository.Get())
+            {
+                if (selectedStudiosHS.Contains(studio.StudioID.ToString()))
+                {
+                    if (!filmeStudios.Contains(studio.StudioID))
+                    {
+                        filmeToUpdate.Studios.Add(studio);
+                    }
+                }
+                else
+                {
+                    if (filmeStudios.Contains(studio.StudioID))
+                    {
+                        filmeToUpdate.Studios.Remove(studio);
+                    }
+                }
+            }
+        }
+
+        private void UpdateRelatedGenres(string[] selectedGenres, Filmes filmeToUpdate)
+        {
+            if (selectedGenres == null)
+            {
+                filmeToUpdate.Generos = new List<Generos>();
+            }
+            else
+            {
+                var selectedGenresHS = new HashSet<string>(selectedGenres);
+                var filmeGenres = new HashSet<int>(filmeToUpdate.Studios.Select(s => s.StudioID));
+
+                foreach (var genre in unitOfWork.GenerosRepository.Get())
+                {
+                    if (selectedGenresHS.Contains(genre.GeneroID.ToString()))
+                    {
+                        if (!filmeGenres.Contains(genre.GeneroID))
+                        {
+                            filmeToUpdate.Generos.Add(genre);
+                        }
+                    }
+                    else
+                    {
+                        if (filmeGenres.Contains(genre.GeneroID))
+                        {
+                            filmeToUpdate.Generos.Remove(genre);
+                        }
+                    }
+                }
+            }
         }
     }
 }

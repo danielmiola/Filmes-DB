@@ -16,10 +16,17 @@ namespace WebApplication.Models
     
     public partial class Papeis
     {
+        [Required]
         [Key, Column(Order = 0)]
         public int FilmeID { get; set; }
+
+        [Required]
         [Key, Column(Order = 1)]
         public int AtorID { get; set; }
+
+        [Required(ErrorMessage = "O {0} é obrigatório")]
+        [Display(Name = "Nome do personagem")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "O {0} deve ter no mínimo 3 e no máximo 100 caracteres.")]
         public string NomePersonagem { get; set; }
     
         public virtual Atores Atores { get; set; }

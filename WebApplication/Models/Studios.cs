@@ -11,6 +11,7 @@ namespace WebApplication.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class Studios
     {
@@ -20,7 +21,13 @@ namespace WebApplication.Models
         }
     
         public int StudioID { get; set; }
+
+        [Required(ErrorMessage = "O {0} é obrigatório")]
+        [Display(Name = "Studio")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "O {0} deve ter no mínimo 3 e no máximo 100 caracteres.")]
         public string Nome { get; set; }
+
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "O {0} deve ter no mínimo 3 e no máximo 100 caracteres.")]
         public string Cidade { get; set; }
     
         public virtual ICollection<Filmes> Filmes { get; set; }

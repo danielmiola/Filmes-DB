@@ -41,6 +41,48 @@
             </div>
         </div>
 
+        <br />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Studios</label>
+            <div class="col-md-10">  
+                @{
+                    foreach (var studio in ViewBag.Studios)
+                    {
+                        <label class="checkbox-inline">
+                            <input type="checkbox"
+                                    name="selectedStudios"
+                                    value="@studio.ID"
+                                    @(Html.Raw(studio.Assigned ? "checked=\"checked\"" : "")) />
+                                    @studio.Description
+                        </label>
+                    }
+                }
+            </div>
+        </div>
+
+        <br />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Gêneros</label>
+            <div class="col-md-10">
+                @{
+                    foreach (var genero in ViewBag.Generos)
+                    {
+                        <label class="checkbox-inline">
+                            <input type="checkbox"
+                                   name="selectedGeneros"
+                                   value="@genero.ID"
+                                   @(Html.Raw(genero.Assigned ? "checked=\"checked\"" : "")) />
+                            @genero.Description
+                        </label>
+                    }
+                }
+            </div>
+        </div>
+        
+        <br />
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Salvar" class="btn btn-success" />

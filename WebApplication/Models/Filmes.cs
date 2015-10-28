@@ -24,8 +24,17 @@ namespace WebApplication.Models
         }
     
         public int FilmeID { get; set; }
+
+        [Required(ErrorMessage = "O {0} é obrigatório")]
+        [Display(Name = "Título")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "O {0} deve ter no mínimo 3 e no máximo 100 caracteres.")]
         public string Titulo { get; set; }
+
+        [Display(Name = "Duração do filme")]
         public Nullable<int> Duracao { get; set; }
+
+        [Range(1800,2100)]
+        [Display(Name = "Ano de lançamento")]
         public Nullable<int> AnoLancamento { get; set; }
     
         public virtual ICollection<Papeis> Papeis { get; set; }

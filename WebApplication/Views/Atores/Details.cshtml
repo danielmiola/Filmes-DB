@@ -19,13 +19,33 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.DataNascimento)
+            Data de nascimento
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.DataNascimento)
         </dd>
 
+        <dt><hr /></dt>
+        <dd></dd>
+
+        @if (Model.Papeis.Count() != 0)
+        {
+            <dt>
+                Personagens
+            </dt>
+            <dd>
+                @foreach (var papel in Model.Papeis)
+	            {
+                    var text = " on ";
+                    @Html.ActionLink(papel.NomePersonagem, "/../Papeis/Details", new { FilmeID = papel.FilmeID, AtorID = papel.AtorID })
+                    @text
+                    @Html.ActionLink(papel.Filmes.Titulo + " (" + papel.Filmes.AnoLancamento + ")", "/../Filmes/Details", new { id = papel.FilmeID })
+                    <br />
+	            }
+            </dd>
+        }
+        
     </dl>
 </div>
 <p>

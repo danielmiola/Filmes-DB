@@ -11,7 +11,7 @@
 	<hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Titulo)
+            Título
         </dt>
 
         <dd>
@@ -19,7 +19,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Duracao)
+            Duração
         </dt>
 
         <dd>
@@ -27,12 +27,61 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AnoLancamento)
+            Ano de lançamento
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.AnoLancamento)
         </dd>
+
+        <dt><hr /></dt>
+        <dd></dd>
+
+        <dt>
+            Gêneros
+        </dt>
+        
+        <dd>
+            @foreach (var item in Model.Generos)
+            {
+                var text = " | ";
+                @Html.ActionLink(item.Descricao, "/../Generos/Details", new { id = item.GeneroID })
+                @text
+            }
+        </dd>
+
+        <dt><hr /></dt>
+        <dd></dd>
+
+        <dt>
+            Studios
+        </dt>
+
+        <dd>
+            @foreach (var item in Model.Studios)
+            {
+                var text = " | ";
+                @Html.ActionLink(item.Nome , "/../Studios/Details", new { id = item.StudioID })
+                @text
+            }
+        </dd>
+
+        <dt><hr /></dt>
+        <dd></dd>
+
+        <dt>
+            Personagens
+        </dt>
+
+        <dd>
+            @foreach (var item in Model.Papeis)
+            {
+                var text = " | ";
+                @Html.ActionLink(item.NomePersonagem, "/../Papeis/Details", new { FilmeID = item.FilmeID, AtorID = item.AtorID })
+                @text
+            }
+        </dd>
+
 
     </dl>
 </div>
