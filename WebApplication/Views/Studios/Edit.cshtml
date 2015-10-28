@@ -20,7 +20,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Nome, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" }, })
                 @Html.ValidationMessageFor(model => model.Nome)
             </div>
         </div>
@@ -28,14 +28,14 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Cidade, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Cidade, new { @class = "form-control" })
+                @Html.EditorFor(model => model.Cidade, new { htmlAttributes = new { @class = "form-control" }, }) 
                 @Html.ValidationMessageFor(model => model.Cidade)
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Savar" class="btn btn-success" />
+                <input type="submit" value="Salvar" class="btn btn-success" />
             </div>
         </div>
     </div>

@@ -48,13 +48,21 @@ namespace WebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include="AtoresID,Nome,DataNascimento")] Atores atores)
+        public async Task<ActionResult> Create([Bind(Include="Nome,DataNascimento")] Atores atores)
         {
-            if (ModelState.IsValid)
+            try
             {
-                unitOfWork.AtoresRepository.Insert(atores);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    unitOfWork.AtoresRepository.Insert(atores);
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             return View(atores);
@@ -78,26 +86,46 @@ namespace WebApplication.Controllers
         // POST: /Atores/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include="AtoresID,Nome,DataNascimento")] Atores atores)
-        {
-            if (ModelState.IsValid)
-            {
-                unitOfWork.AtoresRepository.Update(atores);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
-            }
-            return View(atores);
-        }
-
-        // GET: /Atores/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> EditPost(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            
+            var actorToUpdate = await unitOfWork.AtoresRepository.GetByIDAsync(id);
+            
+            if (TryUpdateModel(actorToUpdate, "", new string[] { "Nome","DataNascimento" }))
+            {
+                try
+                {
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+
+            return View(actorToUpdate);
+        }
+
+        // GET: /Atores/Delete/5
+        public async Task<ActionResult> Delete(int? id, bool? saveChangesError=false)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Falha ao apagar ator. Tente novamente, e se o problema persistir contate o administrador do sistema.";
+            }
+
             Atores atores = await unitOfWork.AtoresRepository.GetByIDAsync(id);
             if (atores == null)
             {
@@ -107,13 +135,22 @@ namespace WebApplication.Controllers
         }
 
         // POST: /Atores/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            unitOfWork.AtoresRepository.Delete(id);
-            await unitOfWork.SaveAsync();
-            return RedirectToAction("Index");
+            try
+            {
+                unitOfWork.AtoresRepository.Delete(id);
+                await unitOfWork.SaveAsync();
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+
+            return RedirectToAction("Index");            
         }
 
         protected override void Dispose(bool disposing)

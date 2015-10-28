@@ -48,15 +48,23 @@ namespace WebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include="FilmeID,Titulo,Duracao,AnoLancamento")] Filmes filmes)
+        public async Task<ActionResult> Create([Bind(Include="Titulo,Duracao,AnoLancamento")] Filmes filmes)
         {
-            if (ModelState.IsValid)
+            try
             {
-                unitOfWork.FilmesRepository.Insert(filmes);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    unitOfWork.FilmesRepository.Insert(filmes);
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
             }
-
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+                
             return View(filmes);
         }
 
@@ -78,26 +86,46 @@ namespace WebApplication.Controllers
         // POST: /Filmes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include="FilmeID,Titulo,Duracao,AnoLancamento")] Filmes filmes)
-        {
-            if (ModelState.IsValid)
-            {
-                unitOfWork.FilmesRepository.Update(filmes);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
-            }
-            return View(filmes);
-        }
-
-        // GET: /Filmes/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> EditPost(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            var filmToUpdate = await unitOfWork.AtoresRepository.GetByIDAsync(id);
+
+            if (TryUpdateModel(filmToUpdate, "", new string[] { "Titulo","Duracao","AnoLancamento" }))
+            {
+                try
+                {
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+
+            return View(filmToUpdate);
+        }
+
+        // GET: /Filmes/Delete/5
+        public async Task<ActionResult> Delete(int? id, bool? saveChangesError=false)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Falha ao apagar filme. Tente novamente, e se o problema persistir contate o administrador do sistema.";
+            }
+
             Filmes filmes = await unitOfWork.FilmesRepository.GetByIDAsync(id);
             if (filmes == null)
             {
@@ -107,12 +135,21 @@ namespace WebApplication.Controllers
         }
 
         // POST: /Filmes/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            unitOfWork.FilmesRepository.Delete(id);
-            await unitOfWork.SaveAsync();
+            try
+            {
+                unitOfWork.FilmesRepository.Delete(id);
+                await unitOfWork.SaveAsync();
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+            
             return RedirectToAction("Index");
         }
 

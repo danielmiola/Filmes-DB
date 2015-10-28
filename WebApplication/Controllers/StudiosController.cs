@@ -48,13 +48,21 @@ namespace WebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include="StudioID,Nome,Cidade")] Studios studios)
+        public async Task<ActionResult> Create([Bind(Include="Nome,Cidade")] Studios studios)
         {
-            if (ModelState.IsValid)
+            try
             {
-                unitOfWork.StudiosRepository.Insert(studios);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    unitOfWork.StudiosRepository.Insert(studios);
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             return View(studios);
@@ -78,26 +86,46 @@ namespace WebApplication.Controllers
         // POST: /Studios/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include="StudioID,Nome,Cidade")] Studios studios)
-        {
-            if (ModelState.IsValid)
-            {
-                unitOfWork.StudiosRepository.Update(studios);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
-            }
-            return View(studios);
-        }
-
-        // GET: /Studios/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> EditPost(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            var studioToEdit = await unitOfWork.StudiosRepository.GetByIDAsync(id);
+
+            if (TryUpdateModel(studioToEdit, "", new string[] { "Nome","Cidade" }))
+            {
+                try
+                {
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+            
+            return View(studioToEdit);
+        }
+
+        // GET: /Studios/Delete/5
+        public async Task<ActionResult> Delete(int? id, bool? saveChangesError = false)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Falha ao apagar Gênero. Tente novamente, e se o problema persistir contate o administrador do sistema.";
+            }
+
             Studios studios = await unitOfWork.StudiosRepository.GetByIDAsync(id);
             if (studios == null)
             {
@@ -107,12 +135,21 @@ namespace WebApplication.Controllers
         }
 
         // POST: /Studios/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            unitOfWork.StudiosRepository.Delete(id);
-            await unitOfWork.SaveAsync();
+            try
+            {
+                unitOfWork.StudiosRepository.Delete(id);
+                await unitOfWork.SaveAsync();
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+            
             return RedirectToAction("Index");
         }
 

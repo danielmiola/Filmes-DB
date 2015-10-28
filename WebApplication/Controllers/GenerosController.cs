@@ -48,13 +48,21 @@ namespace WebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include="GeneroID,Descricao")] Generos generos)
+        public async Task<ActionResult> Create([Bind(Include="Descricao")] Generos generos)
         {
-            if (ModelState.IsValid)
+            try
             {
-                unitOfWork.GenerosRepository.Insert(generos);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    unitOfWork.GenerosRepository.Insert(generos);
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             return View(generos);
@@ -78,26 +86,46 @@ namespace WebApplication.Controllers
         // POST: /Generos/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include="GeneroID,Descricao")] Generos generos)
-        {
-            if (ModelState.IsValid)
-            {
-                unitOfWork.GenerosRepository.Update(generos);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
-            }
-            return View(generos);
-        }
-
-        // GET: /Generos/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> EditPost(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            var genreToUpdate = await unitOfWork.GenerosRepository.GetByIDAsync(id);
+
+            if (TryUpdateModel(genreToUpdate, "", new string[] { "Descricao" }))
+            {
+                try
+                {
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+           
+            return View(genreToUpdate);
+        }
+
+        // GET: /Generos/Delete/5
+        public async Task<ActionResult> Delete(int? id, bool? saveChangesError = false)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Falha ao apagar Gênero. Tente novamente, e se o problema persistir contate o administrador do sistema.";
+            }
+
             Generos generos = await unitOfWork.GenerosRepository.GetByIDAsync(id);
             if (generos == null)
             {
@@ -107,12 +135,21 @@ namespace WebApplication.Controllers
         }
 
         // POST: /Generos/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            unitOfWork.GenerosRepository.Delete(id);
-            await unitOfWork.SaveAsync();
+            try
+            {
+                unitOfWork.GenerosRepository.Delete(id);
+                await unitOfWork.SaveAsync();
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+            
             return RedirectToAction("Index");
         }
 

@@ -13,7 +13,7 @@ using WebApplication.DAL;
 namespace WebApplication.Controllers
 {
     public class PapeisController : Controller
-    {
+    {   
         private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Papeis/
@@ -52,11 +52,19 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include="FilmeID,AtorID,NomePersonagem")] Papeis papeis)
         {
-            if (ModelState.IsValid)
+            try
             {
-                unitOfWork.PapeisRepository.Insert(papeis);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    unitOfWork.PapeisRepository.Insert(papeis);
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
 
             ViewBag.AtorID = new SelectList(unitOfWork.AtoresRepository.Get(), "AtoresID", "Nome", papeis.AtorID);
@@ -84,28 +92,48 @@ namespace WebApplication.Controllers
         // POST: /Papeis/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include="FilmeID,AtorID,NomePersonagem")] Papeis papeis)
-        {
-            if (ModelState.IsValid)
-            {
-                unitOfWork.PapeisRepository.Update(papeis);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
-            }
-            ViewBag.AtorID = new SelectList(unitOfWork.AtoresRepository.Get(), "AtoresID", "Nome", papeis.AtorID);
-            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", papeis.FilmeID);
-            return View(papeis);
-        }
-
-        // GET: /Papeis/Delete/5
-        public async Task<ActionResult> Delete(int? FilmeID, int? AtorID)
+        public async Task<ActionResult> EditPost(int? FilmeID, int? AtorID)
         {
             if (FilmeID == null || AtorID == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            var papelToUpdate = await unitOfWork.PapeisRepository.GetByIDAsync(FilmeID, AtorID);
+
+            if (TryUpdateModel(papelToUpdate, "", new string[] { "NomePersonagem" }))
+            {
+                try
+                {
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+
+            ViewBag.AtorID = new SelectList(unitOfWork.AtoresRepository.Get(), "AtoresID", "Nome", papelToUpdate.AtorID);
+            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", papelToUpdate.FilmeID);
+            return View(papelToUpdate);
+        }
+
+        // GET: /Papeis/Delete/5
+        public async Task<ActionResult> Delete(int? FilmeID, int? AtorID, bool? saveChangesError = false)
+        {
+            if (FilmeID == null || AtorID == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Falha ao apagar personagem. Tente novamente, e se o problema persistir contate o administrador do sistema.";
+            }
+
             Papeis papeis = await unitOfWork.PapeisRepository.GetByIDAsync(FilmeID, AtorID);
             if (papeis == null)
             {
@@ -115,12 +143,21 @@ namespace WebApplication.Controllers
         }
 
         // POST: /Papeis/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int FilmeID, int AtorID)
+        public async Task<ActionResult> Delete(int FilmeID, int AtorID)
         {
-            unitOfWork.PapeisRepository.Delete(FilmeID, AtorID);
-            await unitOfWork.SaveAsync();
+            try
+            {
+                unitOfWork.PapeisRepository.Delete(FilmeID, AtorID);
+                await unitOfWork.SaveAsync();
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                return RedirectToAction("Delete", new { FilmeID = FilmeID, AtorID = AtorID, saveChangesError = true });
+            }
+            
             return RedirectToAction("Index");
         }
 

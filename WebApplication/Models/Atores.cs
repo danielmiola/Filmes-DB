@@ -11,6 +11,7 @@ namespace WebApplication.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class Atores
     {
@@ -21,6 +22,8 @@ namespace WebApplication.Models
     
         public int AtoresID { get; set; }
         public string Nome { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public System.DateTime DataNascimento { get; set; }
     
         public virtual ICollection<Papeis> Papeis { get; set; }
