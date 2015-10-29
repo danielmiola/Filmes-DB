@@ -1,0 +1,34 @@
+﻿@if (ViewBag.Count > 5)
+{
+    <nav class="text-center">
+        <ul class="pagination">
+            @{
+    int prev = ((ViewBag.Page - 1) < 1) ? 1 : (ViewBag.Page - 1);
+    string disPrev = (ViewBag.Page == 1) ? "disabled" : "";
+    string hrefPrev = (ViewBag.Page != 1) ? "/"+@ViewBag.Entity+"/Index/" + @prev : "#";
+            }
+            <li class="@disPrev">
+                <a href="@hrefPrev" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.Max; i++)
+            {
+                string css = (ViewBag.Page == i) ? "active" : "";
+                <li class="@css">@Html.ActionLink(i.ToString(), "Index/", new { id = i })</li>
+            }
+
+            @{
+            int next = ((ViewBag.Page + 1) > ViewBag.Max) ? ViewBag.Max : (ViewBag.Page + 1);
+            string disNext = (ViewBag.Page == ViewBag.Max) ? "disabled" : "";
+            string hrefNext = (ViewBag.Page != ViewBag.Max) ? "/"+@ViewBag.Entity+"/Index/" + @next : "#";
+            }
+            <li class="@disNext">
+                <a href="@hrefNext" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}

@@ -1,10 +1,10 @@
 ﻿@model WebApplication.Models.Reviews
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Cadastro";
 }
 
-<h2>Create</h2>
+<h2>Cadastro</h2>
 
 
 @using (Html.BeginForm()) 
@@ -12,52 +12,44 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Reviews</h4>
+        <h4>Resenhas</h4>
         <hr />
         @Html.ValidationSummary(true)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.FilmeID, "FilmeID", new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.FilmeID, "Filme", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("FilmeID", String.Empty)
+                @Html.DropDownList("FilmeID", null, String.Empty, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.FilmeID)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UserID, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UserID)
-                @Html.ValidationMessageFor(model => model.UserID)
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Nota, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Nota)
+                @Html.EditorFor(model => model.Nota, new { htmlAttributes = new { @class = "form-control", @min = "0", @max = "10" }, })
                 @Html.ValidationMessageFor(model => model.Nota)
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Resenha, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Resenha)
+            <div class="col-md-6">
+                @Html.TextAreaFor(model => model.Resenha, new { @class = "form-control", @rows = "3" })
                 @Html.ValidationMessageFor(model => model.Resenha)
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Cadastrar" class="btn btn-success" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Voltar à lista", "Index")
 </div>
 
 @section Scripts {

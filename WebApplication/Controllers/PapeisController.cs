@@ -17,9 +17,20 @@ namespace WebApplication.Controllers
         private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Papeis/
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? id = 1)
         {
-            return View(await unitOfWork.PapeisRepository.GetAsync(includeProperties: "Atores,Filmes"));
+            var papeis = await unitOfWork.PapeisRepository.GetAsync(includeProperties: "Atores,Filmes");
+            ViewBag.Count = papeis.Count();
+
+            id = (id < 1) ? 1 : id;
+            int add = (papeis.Count() % 5) > 0 ? 1 : 0;
+            id = (id > (papeis.Count() / 5)) ? (papeis.Count() / 5) + add : id;
+
+            ViewBag.Page = id;
+            ViewBag.Max = (papeis.Count() / 5) + add;
+            ViewBag.Entity = "Papeis";
+
+            return View(papeis.Skip((id.GetValueOrDefault() - 1) * 5).Take(5));
         }
 
         // GET: /Papeis/Details/5

@@ -16,9 +16,14 @@ namespace WebApplication.Models
     public partial class Reviews
     {
         public int ReviewID { get; set; }
+
+        [Required(ErrorMessage = "O filme é obrigatório")]
         public int FilmeID { get; set; }
-        public int UserID { get; set; }
-        public decimal Nota { get; set; }
+
+        [Range(0,10, ErrorMessage = "A {0} deve ser entre 0 e 10")]
+        [Required(ErrorMessage = "A {0} é obrigatório")]
+        public int Nota { get; set; }
+
         public string Resenha { get; set; }
     
         public virtual Filmes Filmes { get; set; }

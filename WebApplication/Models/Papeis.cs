@@ -16,11 +16,11 @@ namespace WebApplication.Models
     
     public partial class Papeis
     {
-        [Required]
+        [Required(ErrorMessage = "O filme é obrigatório")]
         [Key, Column(Order = 0)]
         public int FilmeID { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O ator é obrigatório")]
         [Key, Column(Order = 1)]
         public int AtorID { get; set; }
 

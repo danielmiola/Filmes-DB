@@ -1,0 +1,36 @@
+Jobs: (84h)
+
+*Exercícios SQL (PUBS - SQL Server)
+	1 - Exercícios 1,2,3,4,5 e 6. 									   	(4h)   - DONE
+	2 - Exercícios 7,8 e 9. 										   	(3h)   - DONE
+
+*Acesso a dados (Entity Framework)
+	3 - Cap. 1 															(2h)   - DONE
+	4 - Cap. 2															(4h)   - DONE
+	5 - Cap. 3 															(4h)   - DONE
+	6 - Cap. 4 															(4h)   - DONE
+	7 - Cap. 5 															(4h)   - DONE
+	8 - Cap. 6 															(2h)   - DONE
+	9 - Cap. 7 															(4h)   - DONE
+
+*ASP.NET (MVC)
+	10- Introduction to ASP.NET MVC (Video Tutorials)				   	(6h)   - DONE
+	11- Getting Started with EF 6 using MVC 5 (12 Tutorials)			(6h)   - DONE
+	12- EF Database First with ASP.NET MCV (7 Tutorials)				(6h)   - DONE
+
+*Aplicação Web de exemplo CRUD com Entity Framework)					(35h)  - DOING
+	13- Definição do modelo de dados (na 3FN), Diagrama						   - DONE
+	14- Criação da base no SQL Server										   - DONE
+	
+	DONE•	Definição do modelo de dados (na 3FN)
+	DONE•	Diagrama
+	DONE•	Criação da base no SQL Server
+	DONE	o	Ver como criar de forma visual e com SQL, como alterar tabelas utilizando SQL
+	DONE	o	Ver como exportar scripts com dados
+	•	Encaixar:
+		o	Transações (em procedure e/ou utilizando Entity Framework)
+		o	Criação de procedure com parâmetro e chamada pela aplicação
+	DONE•	Utilizar repositórios (Repository Pattern)
+	DONE	o	http://www.asp.net/mvc/tutorials/getting-started-with-ef-5-using-mvc-4
+			/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
+	•	Paginação nas listagens

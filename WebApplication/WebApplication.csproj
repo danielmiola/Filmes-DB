@@ -291,11 +291,6 @@
     <Content Include="Views\Generos\Details.cshtml" />
     <Content Include="Views\Generos\Edit.cshtml" />
     <Content Include="Views\Generos\Index.cshtml" />
-    <Content Include="Views\Reviews\Create.cshtml" />
-    <Content Include="Views\Reviews\Delete.cshtml" />
-    <Content Include="Views\Reviews\Details.cshtml" />
-    <Content Include="Views\Reviews\Edit.cshtml" />
-    <Content Include="Views\Reviews\Index.cshtml" />
     <Content Include="Views\Studios\Create.cshtml" />
     <Content Include="Views\Studios\Delete.cshtml" />
     <Content Include="Views\Studios\Details.cshtml" />
@@ -306,6 +301,12 @@
     <Content Include="Views\Papeis\Details.cshtml" />
     <Content Include="Views\Papeis\Edit.cshtml" />
     <Content Include="Views\Papeis\Index.cshtml" />
+    <Content Include="Views\Reviews\Create.cshtml" />
+    <Content Include="Views\Reviews\Delete.cshtml" />
+    <Content Include="Views\Reviews\Details.cshtml" />
+    <Content Include="Views\Reviews\Edit.cshtml" />
+    <Content Include="Views\Reviews\Index.cshtml" />
+    <Content Include="Views\Shared\_Pagination.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

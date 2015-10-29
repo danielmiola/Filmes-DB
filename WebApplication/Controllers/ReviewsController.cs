@@ -19,7 +19,15 @@ namespace WebApplication.Controllers
         // GET: /Reviews/
         public async Task<ActionResult> Index()
         {
-            return View(await unitOfWork.ReviewsRepository.GetAsync(includeProperties: "Filmes"));
+            var reviews = await unitOfWork.ReviewsRepository.GetAsync(includeProperties: "Filmes");
+            return View(reviews);
+        }
+
+        // GET: /Reviews/Filme/5
+        public async Task<ActionResult> Filme(int id)
+        {
+            var reviews = await unitOfWork.ReviewsRepository.GetAsync(filter: f => f.FilmeID == id, includeProperties: "Filmes");
+            return View("Index", reviews);
         }
 
         // GET: /Reviews/Details/5
@@ -49,16 +57,23 @@ namespace WebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include="ReviewID,FilmeID,UserID,Nota,Resenha")] Reviews reviews)
+        public async Task<ActionResult> Create([Bind(Include="FilmeID,Nota,Resenha")] Reviews reviews)
         {
-            if (ModelState.IsValid)
+            try
             {
-                unitOfWork.ReviewsRepository.Insert(reviews);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    unitOfWork.ReviewsRepository.Insert(reviews);
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
             }
-
-            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", reviews.FilmeID);
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            
             return View(reviews);
         }
 
@@ -81,27 +96,46 @@ namespace WebApplication.Controllers
         // POST: /Reviews/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include="ReviewID,FilmeID,UserID,Nota,Resenha")] Reviews reviews)
-        {
-            if (ModelState.IsValid)
-            {
-                unitOfWork.ReviewsRepository.Update(reviews);
-                await unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
-            }
-            ViewBag.FilmeID = new SelectList(unitOfWork.FilmesRepository.Get(), "FilmeID", "Titulo", reviews.FilmeID);
-            return View(reviews);
-        }
-
-        // GET: /Reviews/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> EditPost(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            Reviews reviewToUpdate = await unitOfWork.ReviewsRepository.GetByIDAsync(id);
+
+            if (TryUpdateModel(reviewToUpdate, "", new string[] { "FilmeID", "Nota", "Resenha" }))
+            {
+                try
+                {
+                    await unitOfWork.SaveAsync();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+
+            return View(reviewToUpdate);
+        }
+
+        // GET: /Reviews/Delete/5
+        public async Task<ActionResult> Delete(int? id, bool? saveChangesError)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Falha ao apagar review. Tente novamente, e se o problema persistir contate o administrador do sistema.";
+            }
+
             Reviews reviews = await unitOfWork.ReviewsRepository.GetByIDAsync(id);
             if (reviews == null)
             {
@@ -111,12 +145,21 @@ namespace WebApplication.Controllers
         }
 
         // POST: /Reviews/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            unitOfWork.ReviewsRepository.Delete(id);
-            await unitOfWork.SaveAsync();
+            try
+            {
+                unitOfWork.ReviewsRepository.Delete(id);
+                await unitOfWork.SaveAsync();
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+
             return RedirectToAction("Index");
         }
 

@@ -1,21 +1,22 @@
 ﻿@model WebApplication.Models.Reviews
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalhes";
 }
 
-<h2>Details</h2>
+<h2>Detalhes</h2>
 
 <div>
-    <h4>Reviews</h4>
+    <h4>Resenhas</h4>
 	<hr />
     <dl class="dl-horizontal">
+
         <dt>
-            @Html.DisplayNameFor(model => model.UserID)
+            Filme
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UserID)
+            @Html.ActionLink(Model.Filmes.Titulo, "/../Filmes/Details", new { id = Model.FilmeID })
         </dd>
 
         <dt>
@@ -34,17 +35,11 @@
             @Html.DisplayFor(model => model.Resenha)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Filmes.Titulo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Filmes.Titulo)
-        </dd>
+        
 
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ReviewID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Editar", "Edit", new { id = Model.ReviewID }) |
+    @Html.ActionLink("Voltar à lista", "Index")
 </p>

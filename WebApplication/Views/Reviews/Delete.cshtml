@@ -1,22 +1,24 @@
 ﻿@model WebApplication.Models.Reviews
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Apagar";
 }
 
-<h2>Delete</h2>
+<h2>Apagar</h2>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Reviews</h4>
-    <hr />
+    <h4>Resenhas</h4>
+    <hr /><h3>Deseja apagar a seguinte resenha?</h3>
+    <p class="error">@ViewBag.ErrorMessage</p>
+    <br />
     <dl class="dl-horizontal">
+
         <dt>
-            @Html.DisplayNameFor(model => model.UserID)
+            Filme
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UserID)
+            @Html.DisplayFor(model => model.Filmes.Titulo)
         </dd>
 
         <dt>
@@ -35,22 +37,14 @@
             @Html.DisplayFor(model => model.Resenha)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Filmes.Titulo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Filmes.Titulo)
-        </dd>
-
     </dl>
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Apagar" class="btn btn-danger" /> |
+            @Html.ActionLink("Voltar à lista", "Index")
         </div>
     }
 </div>

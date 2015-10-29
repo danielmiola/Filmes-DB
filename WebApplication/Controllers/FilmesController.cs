@@ -18,9 +18,20 @@ namespace WebApplication.Controllers
         private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Filmes/
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? id = 1)
         {
-            return View(await unitOfWork.FilmesRepository.GetAsync());
+            var filmes = await unitOfWork.FilmesRepository.GetAsync();
+            ViewBag.Count = filmes.Count();
+
+            id = (id < 1) ? 1 : id;
+            int add = (filmes.Count() % 5) > 0 ? 1 : 0;
+            id = (id > (filmes.Count() / 5)) ? (filmes.Count() / 5) + add : id;
+
+            ViewBag.Page = id;
+            ViewBag.Max = (filmes.Count() / 5) + add;
+            ViewBag.Entity = "Filmes";
+
+            return View(filmes.Skip((id.GetValueOrDefault() - 1) * 5).Take(5));
         }
 
         // GET: /Filmes/Details/5
@@ -92,9 +103,9 @@ namespace WebApplication.Controllers
         // POST: /Filmes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditPost(int? id, string[] selectedStudios, string[] selectedGeneros)
+        public async Task<ActionResult> Edit(int? id, string[] selectedStudios, string[] selectedGeneros)
         {
             if (id == null)
             {

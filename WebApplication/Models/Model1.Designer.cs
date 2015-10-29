@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\daniel.ramos\Desktop\Treinamento\Sprint 1\10 - 12 - ASP.NET MVC\MVC Music Store\ContosoUniversity\WebApplication\WebApplication\Models\Model1.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\daniel.ramos\Desktop\Treinamento\Sprint 1\13 - WEB Application\WebApplication\WebApplication\Models\Model1.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

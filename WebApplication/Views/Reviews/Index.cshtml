@@ -1,18 +1,18 @@
 ﻿@model IEnumerable<WebApplication.Models.Reviews>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Resenhas";
 }
 
-<h2>Index</h2>
+<h2>Resenhas</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Cadrastar nova resenha", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UserID)
+            Filme
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Nota)
@@ -20,16 +20,13 @@
         <th>
             @Html.DisplayNameFor(model => model.Resenha)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Filmes.Titulo)
-        </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.UserID)
+            @Html.DisplayFor(modelItem => item.Filmes.Titulo)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Nota)
@@ -38,12 +35,9 @@
             @Html.DisplayFor(modelItem => item.Resenha)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Filmes.Titulo)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ReviewID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ReviewID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ReviewID })
+            @Html.ActionLink("Editar", "Edit", new { id = item.ReviewID }, new { @class = "btn btn-warning btn-xs" })
+            @Html.ActionLink("Detalhes", "Details", new { id = item.ReviewID }, new { @class = "btn btn-info btn-xs" })
+            @Html.ActionLink("Apagar", "Delete", new { id = item.ReviewID }, new { @class = "btn btn-danger btn-xs" })
         </td>
     </tr>
 }

@@ -82,7 +82,20 @@
             }
         </dd>
 
+        <dt><hr /></dt>
+        <dd></dd>
 
+        @if (Model.Reviews.Count > 0)
+        {   
+        <dt>
+            @Html.ActionLink("Resenhas", "/../Reviews/Filme", new { id = Model.FilmeID })
+        </dt>
+        <dd></dd>
+            
+        <dt><hr /></dt>
+        <dd></dd>
+        }
+        
     </dl>
 </div>
 <p>
