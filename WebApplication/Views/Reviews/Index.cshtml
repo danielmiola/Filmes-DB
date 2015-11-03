@@ -43,3 +43,19 @@
 }
 
 </table>
+
+<!--  Partial que contem a paginação  -->
+@{Html.RenderPartial("~/Views/Shared/_Pagination.cshtml", Model);}
+
+<hr />
+
+<div class="text-center">
+    <h5>Alterar notas de todas as resenhas</h5>
+    <form class="form-inline" action="Reviews/AlterRate">
+        <div class="form-group">
+            <label for="id" class="control-label">Nota: </label>
+            <input class="form-control text-box single-line valid" data-val="true" data-val-number="The field Nota must be a number." data-val-range="A Nota deve ser entre -10 e 10" data-val-range-max="10" data-val-range-min="-10" data-val-required="A Nota é obrigatório" id="Nota" max="10" min="-10" name="id" type="number">
+        </div>
+        <button class="btn btn-sm btn-success">Alterar notas</button>
+    </form>
+</div>

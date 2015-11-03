@@ -110,3 +110,23 @@ CREATE  TABLE [dbo].[Reviews] (
     ON UPDATE NO ACTION
 );
 GO
+
+CREATE PROCEDURE [dbo].[AlterReviewsRate] @dif int AS
+BEGIN
+	BEGIN TRANSACTION t;
+	
+	BEGIN TRY
+		UPDATE [dbo].[Reviews] 
+		SET Nota = CASE 
+			WHEN (Nota + @dif > 10) THEN 10
+			WHEN (Nota + @dif < 0) THEN 0
+			ELSE Nota + @dif
+		END;
+		
+		COMMIT TRANSACTION t;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION t;
+	END CATCH
+END;
+GO

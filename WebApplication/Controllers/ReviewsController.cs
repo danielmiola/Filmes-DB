@@ -17,10 +17,20 @@ namespace WebApplication.Controllers
         private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Reviews/
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? id = 1)
         {
             var reviews = await unitOfWork.ReviewsRepository.GetAsync(includeProperties: "Filmes");
-            return View(reviews);
+            ViewBag.Count = reviews.Count();
+
+            id = (id < 1) ? 1 : id;
+            int add = (reviews.Count() % 5) > 0 ? 1 : 0;
+            id = (id > (reviews.Count() / 5)) ? (reviews.Count() / 5) + add : id;
+
+            ViewBag.Page = id;
+            ViewBag.Max = (reviews.Count() / 5) + add;
+            ViewBag.Entity = "Reviews";
+
+            return View(reviews.Skip((id.GetValueOrDefault() - 1) * 5).Take(5));
         }
 
         // GET: /Reviews/Filme/5
@@ -160,6 +170,18 @@ namespace WebApplication.Controllers
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }
 
+            return RedirectToAction("Index");
+        }
+
+        // GET: /Reviews/AlteRate/5
+        public ActionResult AlterRate(int? id = 0)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            unitOfWork.AlterReviewsRate(id.GetValueOrDefault());
             return RedirectToAction("Index");
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -111,5 +112,11 @@ namespace WebApplication.DAL
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;
         }
+
+        //public virtual void AlterReviewsRate(int i)
+        //{
+        //    SqlParameter param1 = new SqlParameter("@dif",i);
+        //    context.Database.ExecuteSqlCommand("[dbo].[AlterReviewsRate] @dif", param1);
+        //}
     }
 }

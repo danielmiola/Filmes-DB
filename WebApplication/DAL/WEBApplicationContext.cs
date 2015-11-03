@@ -11,6 +11,7 @@ namespace WebApplication.DAL
 {
     using System;
     using System.Data.Entity;
+    using System.Data.Entity.Core.Objects;
     using System.Data.Entity.Infrastructure;
     using WebApplication.Models;
 
@@ -31,5 +32,14 @@ namespace WebApplication.DAL
         public virtual DbSet<Papeis> Papeis { get; set; }
         public virtual DbSet<Reviews> Reviews { get; set; }
         public virtual DbSet<Studios> Studios { get; set; }
+
+        public virtual int AlterReviewsRate(Nullable<int> dif)
+        {
+            var difParameter = dif.HasValue ?
+                new ObjectParameter("dif", dif) :
+                new ObjectParameter("dif", typeof(int));
+
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AlterReviewsRate", difParameter);
+        }
     }
 }

@@ -17,9 +17,20 @@ namespace WebApplication.Controllers
         private UnitOfWork unitOfWork = new UnitOfWork();
 
         // GET: /Generos/
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? id = 1)
         {
-            return View(await unitOfWork.GenerosRepository.GetAsync());
+            var genres = await unitOfWork.GenerosRepository.GetAsync();
+            ViewBag.Count = genres.Count();
+
+            id = (id < 1) ? 1 : id;
+            int add = (genres.Count() % 5) > 0 ? 1 : 0;
+            id = (id > (genres.Count() / 5)) ? (genres.Count() / 5) + add : id;
+
+            ViewBag.Page = id;
+            ViewBag.Max = (genres.Count() / 5) + add;
+            ViewBag.Entity = "Generos";
+
+            return View(genres.Skip((id.GetValueOrDefault() - 1) * 5).Take(5));
         }
 
         // GET: /Generos/Details/5

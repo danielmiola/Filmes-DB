@@ -121,5 +121,10 @@ namespace WebApplication.DAL
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        public void AlterReviewsRate(int dif)
+        {
+            context.AlterReviewsRate(dif);
+        }
     }
 }
